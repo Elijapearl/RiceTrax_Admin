@@ -1,53 +1,52 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(RiceTraxApp());
 }
 
-class MyApp extends StatelessWidget {
+class RiceTraxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      title: 'RiceTrax',
       debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
     );
   }
 }
 
-class LoginPage extends StatefulWidget {
+// ---------------------- LOGIN SCREEN ----------------------
+class LoginScreen extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  // Error state
-  String? _emailError;
-  String? _passwordError;
+  String? emailError;
+  String? passwordError;
 
-  void _login() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
+  void _validateInput() {
     setState(() {
-      // Reset errors
-      _emailError = null;
-      _passwordError = null;
+      final email = _emailController.text;
+      final password = _passwordController.text;
 
-      // Simulate validation
-      if (email.isEmpty || !email.contains('@')) {
-        _emailError = "Invalid email";
-      }
-      if (password.isEmpty || password.length < 6) {
-        _passwordError = "Password must be at least 6 characters";
+      if (email.isEmpty) {
+        emailError = 'Email is required';
+      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+        emailError = 'Enter a valid email';
+      } else {
+        emailError = null;
       }
 
-      // If there are no errors, perform the login action
-      if (_emailError == null && _passwordError == null) {
-        print("Logging in: $email / $password");
-        // Add your login logic here
+      if (password.isEmpty) {
+        passwordError = 'Password is required';
+      } else if (password.length < 6) {
+        passwordError = 'Password must be at least 6 characters';
+      } else {
+        passwordError = null;
       }
     });
   }
@@ -55,83 +54,289 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(30, 60, 30, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo centered
-              Center(
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/palay.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Overlay
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.3)),
+          ),
+
+          // Login form
+          Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.95),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue[100],
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Colors.blue[800],
-                      ),
+                    // Logo
+                    Image.asset(
+                      'assets/rice_logo.jpg',
+                      height: 80,
+                      width: 80,
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 12),
+
                     Text(
-                      'Welcome to MyApp',
+                      'Login to RiceTrax',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 24),
+
+                    // Email Field
+                    TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        errorText: emailError,
+                      ),
+                      onChanged: (_) => _validateInput(),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Password Field
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        errorText: passwordError,
+                      ),
+                      onChanged: (_) => _validateInput(),
+                    ),
+                    SizedBox(height: 12),
+
+                    // Forgot Password
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangePasswordScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Forgot the password?",
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: MediaQuery.of(context).size.width < 360 ? 12 : 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Login Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _validateInput,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber[700],
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-
-              // Email
-              Text("Email:", style: TextStyle(fontSize: 16)),
-              SizedBox(height: 5),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter email',
-                  errorText: _emailError, // Show email error here
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Password
-              Text("Password:", style: TextStyle(fontSize: 16)),
-              SizedBox(height: 5),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter password',
-                  errorText: _passwordError, // Show password error here
-                ),
-              ),
-              SizedBox(height: 30),
-
-              // Login Button centered
-              Center(
-                child: ElevatedButton(
-                  onPressed: _login,
-                  child: Text('Login'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 15.0),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------- CHANGE PASSWORD SCREEN ----------------------
+class ChangePasswordScreen extends StatefulWidget {
+  @override
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+}
+
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final _newPassController = TextEditingController();
+  final _confirmPassController = TextEditingController();
+
+  void _handleSubmit() {
+    final newPassword = _newPassController.text.trim();
+    final confirmPassword = _confirmPassController.text.trim();
+
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      _showDialog('Error', 'Please fill in all fields.');
+    } else if (newPassword.length < 6) {
+      _showDialog('Error', 'Password must be at least 6 characters.');
+    } else if (newPassword != confirmPassword) {
+      _showDialog('Error', 'Passwords do not match.');
+    } else {
+      _showDialog('Success', 'Password changed successfully!', isSuccess: true);
+    }
+  }
+
+  void _showDialog(String title, String message, {bool isSuccess = false}) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              if (isSuccess) {
+                Navigator.pop(context); // Back to Login
+              }
+            },
+            child: Text(isSuccess ? 'Back to Login' : 'OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _newPassController.dispose();
+    _confirmPassController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Change Password'),
+        backgroundColor: Colors.amber[700],
+      ),
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/palay.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Overlay
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.3)),
+          ),
+
+          // Change password form
+          Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.95),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Logo
+                    Image.asset(
+                      'assets/rice_logo.jpg',
+                      height: 80,
+                      width: 80,
+                    ),
+                    SizedBox(height: 12),
+
+                    Text(
+                      'Change Password',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 24),
+
+                    // New Password Field
+                    TextField(
+                      controller: _newPassController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'New Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Confirm Password Field
+                    TextField(
+                      controller: _confirmPassController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+
+                    // Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _handleSubmit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
