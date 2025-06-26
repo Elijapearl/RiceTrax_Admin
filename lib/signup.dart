@@ -15,7 +15,7 @@ class SignUpScreen extends StatelessWidget {
           Image.asset(
             'assets/palay.jpg',
             fit: BoxFit.cover,
-          ),
+          ), //ASSET
           Center(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 20),
