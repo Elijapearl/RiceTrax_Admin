@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
 
-      // Email Validation
+
       if (email.isEmpty) {
         emailError = 'Email is required';
       } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
