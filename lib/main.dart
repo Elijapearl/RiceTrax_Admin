@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'signup.dart ';
+import 'Dashboard.dart';
 
 void main() {
   runApp(RiceTraxApp());
@@ -9,7 +9,7 @@ class RiceTraxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SignUpScreen(),
+      home: Dashboard(),
       debugShowCheckedModeBanner: false,
     );
   }
