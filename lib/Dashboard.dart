@@ -1,16 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'RiceStock.dart';
 
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.green[800],
+              ),
+              child: Text(
+                'RiceTrax Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.dashboard, color: Colors.black),
+              title: Text('Dashboard', style: TextStyle(color: Colors.black)),
+              // walang onTap: hindi clickable
+            ),
+            ListTile(
+              leading: Icon(Icons.inventory, color: Colors.black),
+              title: Text('Rice Inventory', style: TextStyle(color: Colors.black)),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RiceStock()),
+              ),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
-        backgroundColor: Colors.green[800], // KEEP AppBar colored!
-        title: Text('RiceTrax'),
+        backgroundColor: Colors.green[800],
+        title: Text(
+          'RiceTrax',
+          style: TextStyle(
+            fontWeight: FontWeight.bold, // bold title
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {},
+            icon: Icon(Icons.menu, color: Colors.white),
+            onPressed: null, // static icon, not clickable
           ),
         ],
       ),
@@ -27,38 +63,193 @@ class Dashboard extends StatelessWidget {
           ),
           SizedBox(height: 16),
 
-          // Total Sales
-          _buildDashboardCard(title: 'Total Sales Today'),
+          _buildDashboardCard(
+            icon: Icons.attach_money,
+            title: 'Total Sales Today',
+            value: '₱ 15,400',
+          ),
           SizedBox(height: 16),
 
-          // Total Stock
-          _buildDashboardCard(title: 'Total Stock (sacks)'),
+          _buildDashboardCard(
+            icon: Icons.inventory_2,
+            title: 'Total Stock (sacks)',
+            value: '930',
+          ),
           SizedBox(height: 16),
 
-          // Sold Stocks
-          _buildDashboardCard(title: 'Sold Stocks (sacks)'),
+          _buildDashboardCard(
+            icon: Icons.shopping_cart,
+            title: 'Sold Stocks (sacks)',
+            value: '250',
+          ),
           SizedBox(height: 16),
 
-          // Low Stocks
-          _buildDashboardCard(title: 'Low Stocks'),
+          _buildDashboardCard(
+            icon: Icons.warning,
+            title: 'Low Stocks',
+            value: '1 item',
+          ),
+          SizedBox(height: 24),
+
+          _buildSectionTitle('Inventory Breakdown (sacks)'),
+          SizedBox(height: 200, child: _buildPieChart()),
+          SizedBox(height: 24),
+
+          _buildSectionTitle('Monthly Sales (₱)'),
+          SizedBox(height: 200, child: _buildBarChart()),
+
+          SizedBox(height: 24),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RiceStock()),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green[800],
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'View Rice Inventory Stock',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildDashboardCard({
+    required IconData icon,
     required String title,
+    required String value,
   }) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white, // plain card
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300), // subtle border
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 16, color: Colors.black),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: Colors.black, size: 28),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(title, style: TextStyle(fontSize: 16, color: Colors.black)),
+            SizedBox(height: 8),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  Widget _buildPieChart() {
+    return PieChart(
+      PieChartData(
+        sections: [
+          PieChartSectionData(
+            value: 400,
+            title: '400',
+            color: Colors.grey[800],
+            radius: 60,
+          ),
+          PieChartSectionData(
+            value: 300,
+            title: '300',
+            color: Colors.grey[500],
+            radius: 60,
+          ),
+          PieChartSectionData(
+            value: 80,
+            title: '80',
+            color: Colors.grey[300],
+            radius: 60,
+          ),
+        ],
+        sectionsSpace: 2,
+        centerSpaceRadius: 0,
+      ),
+    );
+  }
+
+  Widget _buildBarChart() {
+    return BarChart(
+      BarChartData(
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              getTitlesWidget: (value, _) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
+                return Text(months[value.toInt() % months.length],
+                    style: TextStyle(fontSize: 12, color: Colors.black));
+              },
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              getTitlesWidget: (value, _) => Text(
+                '${value.toInt()}',
+                style: TextStyle(fontSize: 10, color: Colors.black),
+              ),
+            ),
+          ),
+        ),
+        barGroups: [
+          BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 400, color: Colors.grey[800])]),
+          BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 300, color: Colors.grey[800])]),
+          BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 500, color: Colors.grey[800])]),
+          BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 200, color: Colors.grey[800])]),
+          BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 300, color: Colors.grey[800])]),
+        ],
       ),
     );
   }

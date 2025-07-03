@@ -10,6 +10,12 @@ class RiceStock extends StatelessWidget {
     ['Sinandomeng', '0', '9', '₱54', 'Out of Stock'],
   ];
 
+  Color? _getRowBackground(String status) {
+    if (status == 'Low Stock') return Colors.yellow[200]; // highlight yellow
+    if (status == 'Out of Stock') return Colors.red[200]; // highlight red
+    return Colors.white; // default background
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +40,11 @@ class RiceStock extends StatelessWidget {
             defaultColumnWidth: FixedColumnWidth(120),
             children: data.map((row) {
               bool isHeader = row == data.first;
+              // Get status value from last cell
+              String status = row.length > 4 ? row[4] : '';
               return TableRow(
                 decoration: BoxDecoration(
-                  color: isHeader ? Colors.grey[300] : Colors.white,
+                  color: isHeader ? Colors.grey[300] : _getRowBackground(status),
                 ),
                 children: row.map((cell) {
                   return Padding(
@@ -46,6 +54,7 @@ class RiceStock extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
                         fontSize: 14,
+                        color: Colors.black, // always black text
                       ),
                       textAlign: TextAlign.center,
                     ),
