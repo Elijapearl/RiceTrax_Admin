@@ -6,49 +6,73 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.green[800],
+      drawer: Drawer(
+        child: Container(
+          color: Colors.green[800],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.green[900],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'RiceTrax',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.menu, color: Colors.white), // static icon
+                  ],
+                ),
               ),
-              child: Text(
-                'RiceTrax Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              _buildDrawerItem(
+                icon: Icons.dashboard,
+                title: 'Dashboard',
+                context: context,
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Dashboard()),
+                  );
+                },
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.dashboard, color: Colors.black),
-              title: Text('Dashboard', style: TextStyle(color: Colors.black)),
-              // walang onTap: hindi clickable
-            ),
-            ListTile(
-              leading: Icon(Icons.inventory, color: Colors.black),
-              title: Text('Rice Inventory', style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RiceStock()),
+              _buildDrawerItem(
+                icon: Icons.inventory,
+                title: 'Rice Inventory Stock',
+                context: context,
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => RiceStock()),
+                  );
+                },
               ),
-            ),
-          ],
+              _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
+              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
+              _buildDrawerItem(icon: Icons.settings, title: 'Settings', context: context),
+              _buildDrawerItem(icon: Icons.logout, title: 'Logout', context: context),
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[800],
         title: Text(
           'RiceTrax',
-          style: TextStyle(
-            fontWeight: FontWeight.bold, // bold title
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.white),
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu, color: Colors.white),
-            onPressed: null, // static icon, not clickable
-          ),
-        ],
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -58,7 +82,7 @@ class Dashboard extends StatelessWidget {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.green[800],
             ),
           ),
           SizedBox(height: 16),
@@ -125,6 +149,19 @@ class Dashboard extends StatelessWidget {
     );
   }
 
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required BuildContext context,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
+      onTap: onTap ?? () {}, // do nothing by default
+    );
+  }
+
   Widget _buildDashboardCard({
     required IconData icon,
     required String title,
@@ -151,21 +188,21 @@ class Dashboard extends StatelessWidget {
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: Colors.black, size: 28),
+            child: Icon(icon, color: Colors.green[800], size: 28),
           ),
           SizedBox(width: 16),
           Expanded(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(title, style: TextStyle(fontSize: 16, color: Colors.black)),
+                Text(title, style: TextStyle(fontSize: 16, color: Colors.green[800])),
             SizedBox(height: 8),
               Text(
                 value,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.green[800],
                 ),
               ),
               ],
@@ -182,7 +219,7 @@ class Dashboard extends StatelessWidget {
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: Colors.green[800],
       ),
     );
   }
@@ -194,19 +231,19 @@ class Dashboard extends StatelessWidget {
           PieChartSectionData(
             value: 400,
             title: '400',
-            color: Colors.grey[800],
+            color: Colors.green[800],
             radius: 60,
           ),
           PieChartSectionData(
             value: 300,
             title: '300',
-            color: Colors.grey[500],
+            color: Colors.green[400],
             radius: 60,
           ),
           PieChartSectionData(
             value: 80,
             title: '80',
-            color: Colors.grey[300],
+            color: Colors.green[200],
             radius: 60,
           ),
         ],
@@ -228,7 +265,7 @@ class Dashboard extends StatelessWidget {
               getTitlesWidget: (value, _) {
                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
                 return Text(months[value.toInt() % months.length],
-                    style: TextStyle(fontSize: 12, color: Colors.black));
+                    style: TextStyle(fontSize: 12, color: Colors.green[800]));
               },
             ),
           ),
@@ -238,17 +275,17 @@ class Dashboard extends StatelessWidget {
               reservedSize: 28,
               getTitlesWidget: (value, _) => Text(
                 '${value.toInt()}',
-                style: TextStyle(fontSize: 10, color: Colors.black),
+                style: TextStyle(fontSize: 10, color: Colors.green[800]),
               ),
             ),
           ),
         ),
         barGroups: [
-          BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 400, color: Colors.grey[800])]),
-          BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 300, color: Colors.grey[800])]),
-          BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 500, color: Colors.grey[800])]),
-          BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 200, color: Colors.grey[800])]),
-          BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 300, color: Colors.grey[800])]),
+          BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 400, color: Colors.green[800])]),
+          BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 300, color: Colors.green[800])]),
+          BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 500, color: Colors.green[800])]),
+          BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 200, color: Colors.green[800])]),
+          BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 300, color: Colors.green[800])]),
         ],
       ),
     );
