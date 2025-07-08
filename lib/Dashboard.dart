@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'RiceStock.dart';
+import 'Inventory.dart';
 
 class Dashboard extends StatelessWidget {
   @override
@@ -53,6 +54,17 @@ class Dashboard extends StatelessWidget {
                   );
                 },
               ),
+              _buildDrawerItem(
+                icon: Icons.list_alt,
+                title: 'Inventory',
+                context: context,
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Inventory()),
+                  );
+                },
+              ),
               _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
               _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
               _buildDrawerItem(icon: Icons.settings, title: 'Settings', context: context),
@@ -65,7 +77,7 @@ class Dashboard extends StatelessWidget {
         backgroundColor: Colors.green[800],
         title: Text(
           'RiceTrax',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         leading: Builder(
           builder: (context) => IconButton(
@@ -158,7 +170,7 @@ class Dashboard extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
-      onTap: onTap ?? () {}, // do nothing by default
+      onTap: onTap ?? () {},
     );
   }
 
