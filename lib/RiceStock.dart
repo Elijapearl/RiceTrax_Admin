@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'Dashboard.dart';
+import 'Inventory.dart';
 
 class RiceStock extends StatelessWidget {
   final List<List<String>> data = [
@@ -16,11 +18,11 @@ class RiceStock extends StatelessWidget {
     ['Black Rice', '18', '8', '₱70', 'Low Stock'],
     ['Organic Brown', '22', '4', '₱64', 'In Stock'],
     ['Japanese Rice', '55', '15', '₱72', 'In Stock'],
-    ['Basmati', '35', '10', '₱75', 'In Stock'],
+    ['Sinandomeng', '35', '10', '₱54', 'In Stock'],
     ['Well-Milled Rice', '29', '13', '₱59', 'Low Stock'],
     ['Milagrosa', '60', '11', '₱60', 'In Stock'],
-    ['Sugod', '28', '6', '₱63', 'Low Stock'],
-    ['Macan', '0', '5', '₱53', 'Out of Stock'],
+    ['Dinorado', '28', '6', '₱59', 'Low Stock'],
+    ['Malagkit', '0', '5', '₱62', 'Out of Stock'],
   ];
 
   @override
@@ -36,6 +38,61 @@ class RiceStock extends StatelessWidget {
         .length;
 
     return Scaffold(
+      drawer: Drawer(
+        child: Container(
+          color: Colors.green[800],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.green[900]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'RiceTrax',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.menu, color: Colors.white),
+                  ],
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.dashboard,
+                title: 'Dashboard',
+                context: context,
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Dashboard()),
+                ),
+              ),
+              _buildDrawerItem(
+                icon: Icons.inventory,
+                title: 'Rice Inventory Stock',
+                context: context,
+                onTap: () {},
+              ),
+              _buildDrawerItem(
+                icon: Icons.list_alt,
+                title: 'Inventory',
+                context: context,
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Inventory()),
+                ),
+              ),
+              _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
+              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
+              _buildDrawerItem(icon: Icons.settings, title: 'Settings', context: context),
+              _buildDrawerItem(icon: Icons.logout, title: 'Logout', context: context),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.green[800],
         title: Center(
@@ -50,7 +107,6 @@ class RiceStock extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // 🔶 Low Stock Card
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8.0),
             child: Card(
@@ -79,8 +135,6 @@ class RiceStock extends StatelessWidget {
               ),
             ),
           ),
-
-          // 🔴 Out of Stock Card
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8.0),
             child: Card(
@@ -109,8 +163,6 @@ class RiceStock extends StatelessWidget {
               ),
             ),
           ),
-
-          // 📋 Table
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -123,8 +175,6 @@ class RiceStock extends StatelessWidget {
                     defaultColumnWidth: FixedColumnWidth(120),
                     children: data.map((row) {
                       bool isHeader = row == data.first;
-
-
                       Color? rowColor;
                       if (!isHeader) {
                         String status = row[4];
@@ -134,7 +184,6 @@ class RiceStock extends StatelessWidget {
                           rowColor = Colors.red[100];
                         }
                       }
-
                       return TableRow(
                         decoration: BoxDecoration(
                           color: isHeader ? Colors.grey[300] : rowColor,
@@ -164,4 +213,18 @@ class RiceStock extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required BuildContext context,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
+      onTap: onTap ?? () {},
+    );
+  }
 }
+
