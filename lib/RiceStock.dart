@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Dashboard.dart';
 import 'Inventory.dart';
 
+
 class RiceStock extends StatelessWidget {
   final List<List<String>> data = [
     ['Name', 'Stock', 'Sold', 'Price', 'Status'],

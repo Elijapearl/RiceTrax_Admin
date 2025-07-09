@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'RiceStock.dart';
 import 'Inventory.dart';
 
+
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

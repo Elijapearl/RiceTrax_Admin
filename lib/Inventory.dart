@@ -207,6 +207,7 @@ class _InventoryState extends State<Inventory> {
     );
   }
 
+
   Widget _buildDrawerItem({
     required IconData icon,
     required String title,

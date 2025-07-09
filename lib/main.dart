@@ -7,6 +7,7 @@ void main() {
   runApp(RiceTraxApp());
 }
 
+
 class RiceTraxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
