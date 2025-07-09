@@ -2,18 +2,46 @@ import 'package:flutter/material.dart';
 import 'Dashboard.dart';
 import 'RiceStock.dart';
 
-class Inventory extends StatelessWidget {
-  final List<Map<String, dynamic>> items = [
-    {'name': 'Dinorado', 'sacks': 50},
-    {'name': 'Sinandomeng', 'sacks': 30},
-    {'name': 'Jasmine', 'sacks': 20},
-    {'name': 'Well-milled', 'sacks': 45},
-    {'name': 'Premium', 'sacks': 60},
-    {'name': 'Brown Rice', 'sacks': 25},
-    {'name': 'Red Rice', 'sacks': 15},
-    {'name': 'Glutinous', 'sacks': 10},
-    {'name': 'Extra Brand', 'sacks': 5},
+class Inventory extends StatefulWidget {
+  @override
+  _InventoryState createState() => _InventoryState();
+}
+
+class _InventoryState extends State<Inventory> {
+  final List<Map<String, dynamic>> riceData = [
+    {'name': 'Dinorado', 'stock': 50},
+    {'name': 'Sinandomeng', 'stock': 30},
+    {'name': 'Jasmine', 'stock': 20},
+    {'name': 'Well-Milled', 'stock': 45},
+    {'name': 'Premium', 'stock': 60},
+    {'name': 'Brown Rice', 'stock': 25},
+    {'name': 'Red Rice', 'stock': 15},
+    {'name': 'Glutinous', 'stock': 10},
+    {'name': 'Extra Brand', 'stock': 5},
   ];
+
+  String getStatus(int stock) {
+    if (stock <= 10) return 'Out of Stock';
+    if (stock <= 25) return 'Low Stock';
+    return 'In Stock';
+  }
+
+  Color getBadgeColor(String status) {
+    switch (status) {
+      case 'In Stock':
+        return Colors.green.shade200;
+      case 'Low Stock':
+        return Colors.yellow.shade600;
+      case 'Out of Stock':
+        return Colors.red.shade300;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Icon getIcon() {
+    return Icon(Icons.warehouse, color: Colors.green[800], size: 28);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +100,7 @@ class Inventory extends StatelessWidget {
         backgroundColor: Colors.green[800],
         title: Text(
           'RiceTrax',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: Builder(
           builder: (context) => IconButton(
@@ -81,33 +109,100 @@ class Inventory extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
+      body: Padding(
         padding: EdgeInsets.all(16),
-        children: [
-          Text(
-            'Inventory',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Inventory',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-          ),
-          SizedBox(height: 16),
-
-          ...items.map((item) => _buildInventoryCard(item['name'], item['sacks'])).toList(),
-
-          SizedBox(height: 24),
-          Center(
-            child: Text(
-              '+ Add Brand',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+            SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: riceData.length,
+                itemBuilder: (context, index) {
+                  final item = riceData[index];
+                  final status = getStatus(item['stock']);
+                  return TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 1, end: 1),
+                    duration: Duration(milliseconds: 300),
+                    builder: (context, scale, child) {
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RiceDetailsPage(brandName: item['name']),
+                          ),
+                        ),
+                        child: AnimatedScale(
+                          scale: 1.0,
+                          duration: Duration(milliseconds: 200),
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            elevation: 3,
+                            margin: EdgeInsets.only(bottom: 16),
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade50,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: getIcon(),
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                        Text(item['name'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    SizedBox(height: 4),
+                                    Text('${item['stock']} sacks', style: TextStyle(fontSize: 14)),
+                                    SizedBox(height: 8),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: getBadgeColor(status),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          status,
+                                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(onPressed: () {}, icon: Icon(Icons.edit, color: Colors.grey)),
+                                  IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.grey)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
-          )
-        ],
+            Center(
+              child: TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  side: BorderSide(color: Colors.green),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('+ Add Brand', style: TextStyle(fontSize: 16, color: Colors.green)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -121,60 +216,35 @@ class Inventory extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
-      onTap: onTap ?? () {},
+      onTap: onTap,
     );
   }
+}
 
-  Widget _buildInventoryCard(String title, int sacks) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
+class RiceDetailsPage extends StatelessWidget {
+  final String brandName;
+
+  const RiceDetailsPage({Key? key, required this.brandName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green[800],
+        title: Text(
+          '$brandName Details',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(Icons.rice_bowl, color: Colors.black, size: 28),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  '$sacks sacks',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      body: Center(
+        child: Text(
+          '$brandName Details',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
