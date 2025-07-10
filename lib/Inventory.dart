@@ -45,6 +45,8 @@ class _InventoryState extends State<Inventory> {
   }
 
   void _showEditForm(BuildContext context, int index) {
+    TextEditingController _nameController =
+    TextEditingController(text: riceData[index]['name']);
     TextEditingController _stockController =
     TextEditingController(text: riceData[index]['stock'].toString());
 
@@ -52,26 +54,64 @@ class _InventoryState extends State<Inventory> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Stock - ${riceData[index]['name']}'),
-          content: TextField(
-            controller: _stockController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Stock Quantity',
-              border: OutlineInputBorder(),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Text('Edit Brand'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Brand Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 12),
+                TextField(
+                  controller: _stockController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Stock Quantity',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: Text('Cancel'),
+            ),
             ElevatedButton(
               onPressed: () {
+                String newName = _nameController.text.trim();
+                int? newStock = int.tryParse(_stockController.text.trim());
+
+                if (newName.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Brand name cannot be empty.')),
+                  );
+                  return;
+                }
+
+                if (newStock == null || newStock < 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please enter a valid stock quantity.')),
+                  );
+                  return;
+                }
+
                 setState(() {
-                  riceData[index]['stock'] =
-                      int.tryParse(_stockController.text) ?? riceData[index]['stock'];
+                  riceData[index]['name'] = newName;
+                  riceData[index]['stock'] = newStock;
                 });
+
                 Navigator.pop(context);
               },
-              child: Text('Save'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
+              child: Text('Save')  ,
             ),
           ],
         );
@@ -121,13 +161,14 @@ class _InventoryState extends State<Inventory> {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       style: TextButton.styleFrom(
+                        foregroundColor: Colors.red,
                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: Colors.grey.shade400),
                         ),
                       ),
-                      child: Text('Cancel', style: TextStyle(color: Colors.black)),
+                      child: Text('Cancel'),
                     ),
                     SizedBox(width: 10),
                     ElevatedButton(
@@ -135,12 +176,25 @@ class _InventoryState extends State<Inventory> {
                         String name = _nameController.text.trim();
                         int stock = int.tryParse(_stockController.text.trim()) ?? 0;
 
-                        if (name.isNotEmpty) {
-                          setState(() {
-                            riceData.add({'name': name, 'stock': stock});
-                          });
-                          Navigator.pop(context);
+                        if (name.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Brand name cannot be empty.')),
+                          );
+                          return;
                         }
+
+                        if (stock < 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Stock must be zero or more.')),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          riceData.insert(0, {'name': name, 'stock': stock});
+                        });
+
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green[700],
@@ -176,7 +230,8 @@ class _InventoryState extends State<Inventory> {
               });
               Navigator.pop(context);
             },
-            child: Text('Delete'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -309,13 +364,19 @@ class _InventoryState extends State<Inventory> {
                           ),
                           Row(
                             children: [
-                              IconButton(
-                                icon: Icon(Icons.edit, color: Colors.green),
-                                onPressed: () => _showEditForm(context, index),
+                              Tooltip(
+                                message: 'Edit Brand',
+                                child: IconButton(
+                                  icon: Icon(Icons.edit, color: Colors.green),
+                                  onPressed: () => _showEditForm(context, index),
+                                ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.redAccent),
-                                onPressed: () => _deleteBrand(index),
+                              Tooltip(
+                                message: 'Delete Brand',
+                                child: IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.redAccent),
+                                  onPressed: () => _deleteBrand(index),
+                                ),
                               ),
                             ],
                           ),
@@ -331,8 +392,6 @@ class _InventoryState extends State<Inventory> {
               ],
             ),
           ),
-
-          // ✅ Centered Add Brand Button
           Positioned(
             bottom: 20,
             left: 0,
