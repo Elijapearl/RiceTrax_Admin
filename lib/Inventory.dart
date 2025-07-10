@@ -43,6 +43,76 @@ class _InventoryState extends State<Inventory> {
     return Icon(Icons.warehouse, color: Colors.green[800], size: 28);
   }
 
+  void _showAddBrandDialog() {
+    final TextEditingController _brandNameController = TextEditingController();
+    final TextEditingController _stockController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            title: Text('Add New Brand'),
+        content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Text('Brand Name', style: TextStyle(fontWeight: FontWeight.w500)),
+        SizedBox(height: 8),
+        TextField(
+        controller: _brandNameController,
+        decoration: InputDecoration(
+        border: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.black),
+        ),
+        ),
+        ),
+        SizedBox(height: 16),
+        Text('Stock', style: TextStyle(fontWeight: FontWeight.w500)),
+        SizedBox(height: 8),
+        TextField(
+        controller: _stockController,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+        border: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.black),
+        ),
+        ),
+        ),
+        ],
+        ),
+        actions: [
+        TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        style: TextButton.styleFrom(
+        side: BorderSide(color: Colors.black),
+        ),
+        child: Text('Cancel', style: TextStyle(color: Colors.black)),
+        ),
+        TextButton(
+        onPressed: () {
+        final brandName = _brandNameController.text.trim();
+        final stockText = _stockController.text.trim();
+        if (brandName.isNotEmpty && stockText.isNotEmpty) {
+        final stock = int.tryParse(stockText);
+        if (stock != null) {
+        setState(() {
+        riceData.add({'name': brandName, 'stock': stock});
+        });
+        Navigator.of(context).pop();
+        }
+        }
+        },
+        style: TextButton.styleFrom(
+        side: BorderSide(color: Colors.black),
+        ),
+        child: Text('Add', style: TextStyle(color: Colors.black)),
+        ),
+        ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,36 +127,18 @@ class _InventoryState extends State<Inventory> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'RiceTrax',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('RiceTrax',
+                        style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                     Icon(Icons.menu, color: Colors.white),
                   ],
                 ),
               ),
-              _buildDrawerItem(
-                icon: Icons.dashboard,
-                title: 'Dashboard',
-                context: context,
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dashboard()),
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.inventory,
-                title: 'Rice Inventory Stock',
-                context: context,
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => RiceStock()),
-                ),
-              ),
+              _buildDrawerItem(icon: Icons.dashboard, title: 'Dashboard', context: context, onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+              }),
+              _buildDrawerItem(icon: Icons.inventory, title: 'Rice Inventory Stock', context: context, onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RiceStock()));
+              }),
               _buildDrawerItem(icon: Icons.list_alt, title: 'Inventory', context: context),
               _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
               _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
@@ -98,10 +150,7 @@ class _InventoryState extends State<Inventory> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[800],
-        title: Text(
-          'RiceTrax',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text('RiceTrax', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: Colors.white),
@@ -114,10 +163,7 @@ class _InventoryState extends State<Inventory> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Inventory',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
-            ),
+            Text('Inventory', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
@@ -125,75 +171,59 @@ class _InventoryState extends State<Inventory> {
                 itemBuilder: (context, index) {
                   final item = riceData[index];
                   final status = getStatus(item['stock']);
-                  return TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 1, end: 1),
-                    duration: Duration(milliseconds: 300),
-                    builder: (context, scale, child) {
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => RiceDetailsPage(brandName: item['name']),
-                          ),
-                        ),
-                        child: AnimatedScale(
-                          scale: 1.0,
-                          duration: Duration(milliseconds: 200),
-                          child: Card(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            elevation: 3,
-                            margin: EdgeInsets.only(bottom: 16),
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: getIcon(),
+                  return GestureDetector(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 3,
+                      margin: EdgeInsets.only(bottom: 16),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: getIcon(),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                  Text(item['name'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              SizedBox(height: 4),
+                              Text('${item['stock']} sacks', style: TextStyle(fontSize: 14)),
+                              SizedBox(height: 8),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: getBadgeColor(status),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                                  SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                        Text(item['name'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 4),
-                                    Text('${item['stock']} sacks', style: TextStyle(fontSize: 14)),
-                                    SizedBox(height: 8),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        decoration: BoxDecoration(
-                                          color: getBadgeColor(status),
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        child: Text(
-                                          status,
-                                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      ],
-                                    ),
+                                  child: Text(
+                                    status,
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                   ),
-                                  IconButton(onPressed: () {}, icon: Icon(Icons.edit, color: Colors.grey)),
-                                  IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.grey)),
+                                ),
                                 ],
                               ),
                             ),
-                          ),
+                            IconButton(onPressed: () {}, icon: Icon(Icons.edit, color: Colors.green)),
+                            IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.redAccent)),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   );
                 },
               ),
             ),
             Center(
               child: TextButton(
-                onPressed: () {},
+                onPressed: () => _showAddBrandDialog(),
                 style: TextButton.styleFrom(
                   side: BorderSide(color: Colors.green),
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -207,7 +237,6 @@ class _InventoryState extends State<Inventory> {
     );
   }
 
-
   Widget _buildDrawerItem({
     required IconData icon,
     required String title,
@@ -218,35 +247,6 @@ class _InventoryState extends State<Inventory> {
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
       onTap: onTap,
-    );
-  }
-}
-
-class RiceDetailsPage extends StatelessWidget {
-  final String brandName;
-
-  const RiceDetailsPage({Key? key, required this.brandName}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green[800],
-        title: Text(
-          '$brandName Details',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          '$brandName Details',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
     );
   }
 }

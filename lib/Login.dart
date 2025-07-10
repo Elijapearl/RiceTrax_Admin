@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'SignUp.dart';
+import 'ChangePassword.dart';
+import 'Dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,39 +17,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _validateInput() {
     setState(() {
-      final email = _emailController.text.trim();
+      final email = _emailController.text;
       final password = _passwordController.text;
 
-
       if (email.isEmpty) {
-        emailError = 'Email is required';
+        emailError = ' Please fill out this field';
       } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
         emailError = 'Enter a valid email';
       } else {
         emailError = null;
       }
 
-      // Password Validation
       if (password.isEmpty) {
-        passwordError = 'Password is required';
+        passwordError = ' Please fill out this field';
       } else if (password.length < 6) {
         passwordError = 'Password must be at least 6 characters';
       } else {
         passwordError = null;
       }
 
-      // Debug print (optional)
-      print("Email: $email, Password: $password");
-
-      // If no errors, proceed with login
       if (emailError == null && passwordError == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login successful!'),
-            backgroundColor: Colors.green,
-          ),
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
         );
-        // You can navigate to the next screen here
       }
     });
   }
@@ -55,11 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/palay.jpg',
-            fit: BoxFit.cover,
+          Positioned.fill(
+            child: Image.asset('assets/palay.jpg', fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.3)),
           ),
           Center(
             child: Container(
@@ -72,57 +67,51 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Image.asset('assets/rice_logo.jpg', height: 60),
-                    SizedBox(height: 16),
-                    Text(
-                      'Login to RiceTraX',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    Image.asset('assets/rice_logo.jpg', height: 80, width: 80),
+                    SizedBox(height: 12),
+                    Text('Login to RiceTraX',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                     SizedBox(height: 24),
-
-
                     TextField(
                       controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         errorText: emailError,
                       ),
-                      onChanged: (_) => _validateInput(),
                     ),
                     SizedBox(height: 16),
-
-                    // Password
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                            borderRadius: BorderRadius.circular(12)),
                         errorText: passwordError,
                       ),
-                      onChanged: (_) => _validateInput(),
                     ),
                     SizedBox(height: 12),
-
-                    // Forgot Password
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
-                        child: Text("Forgot Password?"),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangePasswordScreen()),
+                        ),
+                        child: Text('Forgot Password?',
+                            style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.w500)),
                       ),
                     ),
-
-                    // Login Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
+                        onPressed: _validateInput,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.amber[700],
                           padding: EdgeInsets.symmetric(vertical: 14),
@@ -130,18 +119,33 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: _validateInput,
-                        child: Text(
-                          'Login',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text('Login',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account? "),
+                        TextButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                          ),
+                          child: Text('Sign Up',
+                              style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.w500)),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
