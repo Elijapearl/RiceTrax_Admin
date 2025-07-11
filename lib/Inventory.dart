@@ -20,6 +20,12 @@ class _InventoryState extends State<Inventory> {
     {'name': 'Red Rice', 'stock': 15},
     {'name': 'Glutinous', 'stock': 10},
     {'name': 'Extra Brand', 'stock': 5},
+    {'name': 'Intan', 'stock': 0},
+    {'name': 'Golden Queen', 'stock': 65},
+    {'name': 'Blue Dragon', 'stock': 12},
+    {'name': 'Black Rice', 'stock': 18},
+    {'name': 'Organic Brown', 'stock': 22},
+    {'name': 'Japanese Rice', 'stock': 55},
   ];
 
   String getStatus(int stock) {
