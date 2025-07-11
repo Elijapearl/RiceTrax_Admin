@@ -316,12 +316,19 @@ class _InventoryState extends State<Inventory> {
                       return GestureDetector(
                         onTap: () => Navigator.push(
                           context,
+
+
+
+
                           MaterialPageRoute(
                             builder: (_) => RiceDetailsPage(
                               brandName: item['name'],
                               stock: item['stock'],
                               status: status,
                             ),
+
+
+
                           ),
                         ),
                         child: Card(
