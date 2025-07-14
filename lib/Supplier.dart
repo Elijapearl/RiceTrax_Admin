@@ -19,7 +19,7 @@ class SupplierPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('RiceTrax', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text('RiceTraX', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                     Icon(Icons.menu, color: Colors.white),
                   ],
                 ),

@@ -36,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('RiceTrax',
+                    Text('RiceTraX',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 24,

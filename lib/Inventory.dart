@@ -300,7 +300,7 @@ class _InventoryState extends State<Inventory> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[800],
-        title: Text('RiceTrax', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('RiceTraX', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: Colors.white),
