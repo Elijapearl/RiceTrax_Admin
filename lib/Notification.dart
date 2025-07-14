@@ -42,6 +42,7 @@ class NotificationsPage extends StatelessWidget {
                 title: Text('Settings', style: TextStyle(color: Colors.white, fontSize: 16)),
                 onTap: () {}, // Wala pang laman, hindi muna pinapagana
               ),
+
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.white),
                 title: Text('Logout', style: TextStyle(color: Colors.white, fontSize: 16)),
