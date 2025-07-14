@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'Dashboard.dart';
 import 'Inventory.dart';
+import 'Supplier.dart';
+import 'Notification.dart';
 
 class RiceStock extends StatelessWidget {
   final List<List<String>> data = [
@@ -49,46 +51,27 @@ class RiceStock extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'RiceTrax',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('RiceTrax', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                     Icon(Icons.menu, color: Colors.white),
                   ],
                 ),
               ),
-              _buildDrawerItem(
-                icon: Icons.dashboard,
-                title: 'Dashboard',
-                context: context,
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dashboard()),
-                ),
-              ),
-              _buildDrawerItem(
-                icon: Icons.inventory,
-                title: 'Rice Inventory Stock',
-                context: context,
+              _buildDrawerItem(icon: Icons.dashboard, title: 'Dashboard', context: context, page: Dashboard()),
+              _buildDrawerItem(icon: Icons.inventory, title: 'Rice Inventory Stock', context: context, page: RiceStock()),
+              _buildDrawerItem(icon: Icons.list_alt, title: 'Inventory', context: context, page: Inventory()),
+              _buildDrawerItem(icon: Icons.person, title: 'Supplier', context: context, page: SupplierPage()),
+              _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context, page: Inventory()),
+              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context, page: NotificationsPage()),
+              ListTile(
+                leading: Icon(Icons.settings, color: Colors.white),
+                title: Text('Settings', style: TextStyle(color: Colors.white, fontSize: 16)),
                 onTap: () {},
               ),
-              _buildDrawerItem(
-                icon: Icons.list_alt,
-                title: 'Inventory',
-                context: context,
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Inventory()),
-                ),
+              ListTile(
+                leading: Icon(Icons.logout, color: Colors.white),
+                title: Text('Logout', style: TextStyle(color: Colors.white, fontSize: 16)),
+                onTap: () {},
               ),
-              _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
-              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
-              _buildDrawerItem(icon: Icons.settings, title: 'Settings', context: context),
-              _buildDrawerItem(icon: Icons.logout, title: 'Logout', context: context),
             ],
           ),
         ),
@@ -96,13 +79,7 @@ class RiceStock extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.green[800],
         title: Center(
-          child: Text(
-            'Rice Inventory Stock',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: Text('Rice Inventory Stock', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
       ),
       body: Column(
@@ -112,26 +89,11 @@ class RiceStock extends StatelessWidget {
             child: Card(
               color: Colors.orange[100],
               elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: ListTile(
                 leading: Icon(Icons.warning, color: Colors.orange[900], size: 36),
-                title: Text(
-                  'Low Stock Items',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange[900],
-                    fontSize: 16,
-                  ),
-                ),
-                subtitle: Text(
-                  '$lowStockCount item(s) low on stock',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.orange[800],
-                  ),
-                ),
+                title: Text('Low Stock Items', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[900], fontSize: 16)),
+                subtitle: Text('$lowStockCount item(s) low on stock', style: TextStyle(fontSize: 14, color: Colors.orange[800])),
               ),
             ),
           ),
@@ -140,26 +102,11 @@ class RiceStock extends StatelessWidget {
             child: Card(
               color: Colors.red[100],
               elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: ListTile(
                 leading: Icon(Icons.error, color: Colors.red[900], size: 36),
-                title: Text(
-                  'Out of Stock Items',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red[900],
-                    fontSize: 16,
-                  ),
-                ),
-                subtitle: Text(
-                  '$outOfStockCount item(s) out of stock',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.red[800],
-                  ),
-                ),
+                title: Text('Out of Stock Items', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[900], fontSize: 16)),
+                subtitle: Text('$outOfStockCount item(s) out of stock', style: TextStyle(fontSize: 14, color: Colors.red[800])),
               ),
             ),
           ),
@@ -185,21 +132,11 @@ class RiceStock extends StatelessWidget {
                         }
                       }
                       return TableRow(
-                        decoration: BoxDecoration(
-                          color: isHeader ? Colors.grey[300] : rowColor,
-                        ),
+                        decoration: BoxDecoration(color: isHeader ? Colors.grey[300] : rowColor),
                         children: row.map((cell) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              cell,
-                              style: TextStyle(
-                                fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                            child: Text(cell, textAlign: TextAlign.center, style: TextStyle(fontWeight: isHeader ? FontWeight.bold : FontWeight.normal, fontSize: 14)),
                           );
                         }).toList(),
                       );
@@ -218,12 +155,14 @@ class RiceStock extends StatelessWidget {
     required IconData icon,
     required String title,
     required BuildContext context,
-    VoidCallback? onTap,
+    required Widget page,
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
-      onTap: onTap ?? () {},
+      onTap: () {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
+      },
     );
   }
 }
