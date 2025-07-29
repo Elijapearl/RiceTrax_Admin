@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'Dashboard.dart';
 import 'RiceStock.dart';
+import 'Supplier.dart';
+import 'Notification.dart';
 import 'RiceDetailsPage.dart';
 
 class Inventory extends StatefulWidget {
@@ -47,9 +49,6 @@ class _InventoryState extends State<Inventory> {
   void _showEditForm(BuildContext context, int index) {
     TextEditingController _nameController =
     TextEditingController(text: riceData[index]['name']);
-    TextEditingController _stockController =
-    TextEditingController(text: riceData[index]['stock'].toString());
-
 
     showDialog(
       context: context,
@@ -68,13 +67,9 @@ class _InventoryState extends State<Inventory> {
                   ),
                 ),
                 SizedBox(height: 12),
-                TextField(
-                  controller: _stockController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Stock Quantity',
-                    border: OutlineInputBorder(),
-                  ),
+                Text(
+                  'Stock Quantity: ${riceData[index]['stock']} sacks',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -88,7 +83,6 @@ class _InventoryState extends State<Inventory> {
             ElevatedButton(
               onPressed: () {
                 String newName = _nameController.text.trim();
-                int? newStock = int.tryParse(_stockController.text.trim());
 
                 if (newName.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -97,22 +91,14 @@ class _InventoryState extends State<Inventory> {
                   return;
                 }
 
-                if (newStock == null || newStock < 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please enter a valid stock quantity.')),
-                  );
-                  return;
-                }
-
                 setState(() {
                   riceData[index]['name'] = newName;
-                  riceData[index]['stock'] = newStock;
                 });
 
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green[400]),
-              child: Text('Save')  ,
+              child: Text('Save'),
             ),
           ],
         );
@@ -134,26 +120,17 @@ class _InventoryState extends State<Inventory> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Add New Brand',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text('Add New Brand', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 SizedBox(height: 16),
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Brand Name',
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(labelText: 'Brand Name', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 12),
                 TextField(
                   controller: _stockController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Stock',
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(labelText: 'Stock', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -163,7 +140,6 @@ class _InventoryState extends State<Inventory> {
                       onPressed: () => Navigator.pop(context),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.red,
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: Colors.grey.shade400),
@@ -200,9 +176,7 @@ class _InventoryState extends State<Inventory> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green[700],
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text('Add', style: TextStyle(color: Colors.white)),
                     ),
@@ -266,21 +240,33 @@ class _InventoryState extends State<Inventory> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('RiceTrax',
-                        style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text('RiceTrax', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                     Icon(Icons.menu, color: Colors.white),
                   ],
                 ),
               ),
-              _buildDrawerItem(icon: Icons.dashboard, title: 'Dashboard', context: context, onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()));
-              }),
-              _buildDrawerItem(icon: Icons.inventory, title: 'Rice Inventory Stock', context: context, onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RiceStock()));
-              }),
+              _buildDrawerItem(
+                  icon: Icons.dashboard,
+                  title: 'Dashboard',
+                  context: context,
+                  onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()))),
+              _buildDrawerItem(
+                  icon: Icons.inventory,
+                  title: 'Rice Inventory Stock',
+                  context: context,
+                  onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RiceStock()))),
               _buildDrawerItem(icon: Icons.list_alt, title: 'Inventory', context: context),
+              _buildDrawerItem(
+                  icon: Icons.people,
+                  title: 'Supplier',
+                  context: context,
+                  onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SupplierPage()))),
               _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context),
-              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context),
+              _buildDrawerItem(
+                  icon: Icons.notifications,
+                  title: 'Notifications',
+                  context: context,
+                  onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => NotificationsPage()))),
               _buildDrawerItem(icon: Icons.settings, title: 'Settings', context: context),
               _buildDrawerItem(icon: Icons.logout, title: 'Logout', context: context),
             ],
@@ -389,7 +375,6 @@ class _InventoryState extends State<Inventory> {
                     },
                   ),
                 ),
-                SizedBox(height: 70),
               ],
             ),
           ),
@@ -401,10 +386,8 @@ class _InventoryState extends State<Inventory> {
               child: ElevatedButton.icon(
                 onPressed: () => _showAddForm(context),
                 icon: Icon(Icons.add, size: 20, color: Colors.green[800]),
-                label: Text(
-                  'Add Brand',
-                  style: TextStyle(color: Colors.green[800], fontWeight: FontWeight.bold),
-                ),
+                label: Text('Add Brand',
+                    style: TextStyle(color: Colors.green[800], fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   elevation: 2,

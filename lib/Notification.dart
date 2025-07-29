@@ -4,12 +4,35 @@ import 'Inventory.dart';
 import 'RiceStock.dart';
 
 class NotificationsPage extends StatelessWidget {
-  final List<String> notifications = [
-    'Jasmine is Low Stock',
-    'Well-Milled is Out of Stock',
-    'Brown Rice is Low Stock',
-    'Glutinous is Low Stock',
-    'Extra Brand is Out of Stock',
+  final List<Map<String, String>> notifications = [
+    {
+      'message': 'Jasmine is Low Stock',
+      'datetime': '2025-07-14   09:45 AM'
+    },
+    {
+      'message': 'Well-Milled is Out of Stock',
+      'datetime': '2025-07-13   09:30 AM'
+    },
+    {
+      'message': 'Brown Rice is Low Stock',
+      'datetime': '2025-07-13   05:10 PM'
+    },
+    {
+      'message': 'Glutinous is Low Stock',
+      'datetime': '2025-07-12   04:00 PM'
+    },
+    {
+      'message': 'Extra Brand is Out of Stock',
+      'datetime': '2025-07-11   03:25 PM'
+    },
+    {
+      'message': 'Premium Rice is In Stock',
+      'datetime': '2025-07-10   10:20 AM'
+    },
+    {
+      'message': 'Organic Rice is In Stock',
+      'datetime': '2025-07-09   02:15 PM'
+    },
   ];
 
   @override
@@ -26,27 +49,56 @@ class NotificationsPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('RiceTrax', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text('RiceTrax',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold)),
                     Icon(Icons.menu, color: Colors.white),
                   ],
                 ),
               ),
-              _buildDrawerItem(icon: Icons.dashboard, title: 'Dashboard', context: context, page: Dashboard()),
-              _buildDrawerItem(icon: Icons.inventory, title: 'Rice Inventory Stock', context: context, page: RiceStock()),
-              _buildDrawerItem(icon: Icons.list_alt, title: 'Inventory', context: context, page: Inventory()),
-              _buildDrawerItem(icon: Icons.person, title: 'Supplier', context: context, page: Inventory()),
-              _buildDrawerItem(icon: Icons.attach_money, title: 'Sales', context: context, page: Inventory()),
-              _buildDrawerItem(icon: Icons.notifications, title: 'Notifications', context: context, page: NotificationsPage()),
+              _buildDrawerItem(
+                  icon: Icons.dashboard,
+                  title: 'Dashboard',
+                  context: context,
+                  page: Dashboard()),
+              _buildDrawerItem(
+                  icon: Icons.inventory,
+                  title: 'Rice Inventory Stock',
+                  context: context,
+                  page: RiceStock()),
+              _buildDrawerItem(
+                  icon: Icons.list_alt,
+                  title: 'Inventory',
+                  context: context,
+                  page: Inventory()),
+              _buildDrawerItem(
+                  icon: Icons.person,
+                  title: 'Supplier',
+                  context: context,
+                  page: Inventory()),
+              _buildDrawerItem(
+                  icon: Icons.attach_money,
+                  title: 'Sales',
+                  context: context,
+                  page: Inventory()),
+              _buildDrawerItem(
+                  icon: Icons.notifications,
+                  title: 'Notifications',
+                  context: context,
+                  page: NotificationsPage()),
               ListTile(
                 leading: Icon(Icons.settings, color: Colors.white),
-                title: Text('Settings', style: TextStyle(color: Colors.white, fontSize: 16)),
-                onTap: () {}, // Wala pang laman, hindi muna pinapagana
+                title: Text('Settings',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                onTap: () {},
               ),
-
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.white),
-                title: Text('Logout', style: TextStyle(color: Colors.white, fontSize: 16)),
-                onTap: () {}, // Wala pang laman, hindi muna pinapagana
+                title: Text('Logout',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                onTap: () {},
               ),
             ],
           ),
@@ -54,7 +106,9 @@ class NotificationsPage extends StatelessWidget {
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[800],
-        title: Text('RiceTrax', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('RiceTrax',
+            style:
+            TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: Colors.white),
@@ -67,17 +121,35 @@ class NotificationsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Product Notifications', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            Text('Product Notifications',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
                   final item = notifications[index];
+                  final message = item['message'] ?? '';
+                  final datetime = item['datetime'] ?? '';
+
+                  Color? cardColor;
+                  if (message.contains('Out of Stock')) {
+                    cardColor = Colors.red[100];
+                  } else if (message.contains('Low Stock')) {
+                    cardColor = Colors.yellow[100];
+                  } else if (message.contains('In Stock')) {
+                    cardColor = Colors.green[100];
+                  }
+
                   return Card(
+                    color: cardColor,
                     margin: EdgeInsets.only(bottom: 16),
                     child: ListTile(
-                      title: Text(item),
+                      leading: Icon(Icons.notifications_active,
+                          color: Colors.green[800]),
+                      title: Text(message),
+                      subtitle: Text(datetime,
+                          style: TextStyle(color: Colors.grey[600])),
                     ),
                   );
                 },
@@ -97,9 +169,11 @@ class NotificationsPage extends StatelessWidget {
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
+      title:
+      Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
       onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => page));
       },
     );
   }
