@@ -1,69 +1,31 @@
 import 'package:flutter/material.dart';
+import 'Dashboard.dart';
+import 'Inventory.dart';
+import 'RiceStock.dart';
+import 'Login.dart';
+import 'SignUp.dart';
+import 'ChangePassword.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(RiceTraxApp());
 }
 
-class MyApp extends StatelessWidget {
+
+class RiceTraxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      title: 'RiceTrax',
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('LOGIN FORM')),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20.0, top: 50.0, right: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Email
-            Text("Email:", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 5),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter email',
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Password
-            Text("Password:", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 5),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter password',
-              ),
-            ),
-            SizedBox(height: 30),
-
-            // Login Button
-            ElevatedButton(
-              onPressed: () {
-                String email = _emailController.text;
-                String password = _passwordController.text;
-                print("Logging in: $email / $password");
-              },
-              child: Text('Login'),
-            ),
-          ],
-        ),
-      ),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/signup': (context) => SignUpScreen(),
+        '/change_password': (context) => ChangePasswordScreen(),
+        '/dashboard': (context) => Dashboard(),
+        '/inventory': (context) => Inventory(),
+        '/rice_stock': (context) => RiceStock(),
+      },
     );
   }
 }
